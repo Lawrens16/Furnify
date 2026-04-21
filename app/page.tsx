@@ -1,18 +1,19 @@
-import { cookies } from "next/headers";
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import Categories from "@/components/Categories";
+import BestSellers from "@/components/BestSellers";
+import Inspirations from "@/components/Inspirations";
+import { Footer } from "@/components/ui/footer-section";
 
-import { createClient } from "@/utils/supabase/server";
-
-export default async function Page() {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
-
-  const { data: todos } = await supabase.from("todos").select();
-
+export default function Home() {
   return (
-    <ul>
-      {todos?.map((todo) => (
-        <li key={todo.id}>{todo.name}</li>
-      ))}
-    </ul>
+    <main className="min-h-screen bg-[#e8e7e3] text-gray-900 font-sans selection:bg-[#91A57D] selection:text-white">
+      <Navbar />
+      <HeroSection />
+      <Categories />
+      <BestSellers />
+      <Inspirations />
+      <Footer />
+    </main>
   );
 }
