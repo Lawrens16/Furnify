@@ -160,16 +160,6 @@ export default function Inspirations() {
         </div>
 
       </div>
-      
-      <style jsx>{`
-        .hide-scroll-bar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .hide-scroll-bar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 }

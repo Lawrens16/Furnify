@@ -3,6 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import Categories from "@/components/Categories";
 import BestSellers from "@/components/BestSellers";
 import Inspirations from "@/components/Inspirations";
+import { Footer } from "@/components/ui/footer-section";
 
 export default function Home() {
   return (
@@ -12,10 +13,7 @@ export default function Home() {
       <Categories />
       <BestSellers />
       <Inspirations />
-      {/* Footer Placeholder */}
-      <div id="footer-placeholder" className="w-full h-32 bg-[#e8e7e3] flex items-center justify-center border-t border-gray-300">
-        <p className="text-gray-500 font-medium tracking-widest uppercase text-sm">Footer Section (Reserved)</p>
-      </div>
+      <Footer />
     </main>
   );
 }
