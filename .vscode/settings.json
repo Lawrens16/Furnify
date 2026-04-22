@@ -1,4 +1,4 @@
 {
-  "chat.mcp.autostart": "onlyNew", 
-  "chat.mcp.enabled": true
+  "chat.mcp.autostart": "onlyNew",
+  "chat.mcp.access": "all"
 }
