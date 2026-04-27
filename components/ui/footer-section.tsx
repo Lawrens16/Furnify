@@ -47,15 +47,7 @@ const footerLinks: FooterSection[] = [
 			{ title: 'Help', href: '/help' },
 		],
 	},
-	{
-		label: 'Social Links',
-		links: [
-			{ title: 'Facebook', href: '#', icon: Facebook },
-			{ title: 'Instagram', href: '#', icon: Instagram },
-			{ title: 'Youtube', href: '#', icon: Youtube },
-			{ title: 'LinkedIn', href: '#', icon: Linkedin },
-		],
-	},
+	
 ];
 
 export function Footer() {
