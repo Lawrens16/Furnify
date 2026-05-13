@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
 
 const interSans = Inter({
@@ -22,7 +23,9 @@ export default function RootLayout({
       lang="en"
       className={`${interSans.variable} font-sans antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#e8e7e3] text-gray-900">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#e8e7e3] text-gray-900">
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }
