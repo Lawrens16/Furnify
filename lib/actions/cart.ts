@@ -10,6 +10,10 @@ type CartItemRow = CartItem & {
 export async function getCartItems(
   sessionId: string,
 ): Promise<CartItemWithProduct[]> {
+  if (!sessionId) {
+    return [];
+  }
+
   const supabase = createClient();
   const { data, error } = await supabase
     .from("cart_items")
@@ -17,8 +21,53 @@ export async function getCartItems(
     .eq("session_id", sessionId);
 
   if (error) {
-    console.error("getCartItems error:", error);
-    return [];
+    console.error("getCartItems error:", error.message ?? error);
+
+    const { data: cartItems, error: cartError } = await supabase
+      .from("cart_items")
+      .select("*")
+      .eq("session_id", sessionId);
+
+    if (cartError) {
+      console.error("getCartItems fallback error:", cartError.message ?? cartError);
+      return [];
+    }
+
+    const productIds = (cartItems ?? []).map((item) => item.product_id);
+    if (productIds.length === 0) {
+      return [];
+    }
+
+    const { data: products, error: productsError } = await supabase
+      .from("products")
+      .select("*")
+      .in("id", productIds);
+
+    if (productsError) {
+      console.error(
+        "getCartItems products error:",
+        productsError.message ?? productsError,
+      );
+      return [];
+    }
+
+    const productMap = new Map(
+      (products ?? []).map((product) => [product.id, product]),
+    );
+
+    return (cartItems as CartItemRow[] | null | undefined)
+      ?.map((item) => {
+        const product = productMap.get(item.product_id);
+        if (!product) {
+          return null;
+        }
+
+        return {
+          ...item,
+          product,
+        } as CartItemWithProduct;
+      })
+      .filter(Boolean) as CartItemWithProduct[];
   }
 
   return (data as CartItemRow[] | null | undefined)?.map((item) => {
