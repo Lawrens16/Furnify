@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, ContactShadows, RoundedBox, AccumulativeShadows, RandomizedLight } from "@react-three/drei";
 import { Check, ShoppingCart, Info } from "lucide-react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCart } from "@/context/CartContext";
+import { getProducts } from "@/lib/actions/products";
+import { normalizeProductName } from "@/lib/utils";
+import type { Product } from "@/types/database";
 
 // --- 3D Configurable Component ---
 function ConfigurableFurniture({ shape, fabricColor, legColor }: { shape: string, fabricColor: string, legColor: string }) {
@@ -142,11 +146,80 @@ const LEG_MATERIALS = [
 ];
 
 export default function BuildPage() {
+  const { addItem } = useCart();
   const [activeShape, setActiveShape] = useState(SHAPES[0]);
   const [activeFabric, setActiveFabric] = useState(FABRIC_COLORS[0]);
   const [activeLegs, setActiveLegs] = useState(LEG_MATERIALS[0]);
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const totalPrice = activeShape.basePrice + activeLegs.price;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProducts = async () => {
+      const data = await getProducts();
+      if (isMounted) {
+        setCatalogProducts(data);
+        setIsCatalogLoading(false);
+      }
+    };
+
+    loadProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!toastMessage) {
+      return;
+    }
+
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMessage(null);
+    }, 2000);
+
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, [toastMessage]);
+
+  const catalogByName = useMemo(() => {
+    const map = new Map<string, Product>();
+    catalogProducts.forEach((product) => {
+      map.set(normalizeProductName(product.name), product);
+    });
+    return map;
+  }, [catalogProducts]);
+
+  const matchedProduct =
+    catalogByName.get(normalizeProductName(activeShape.name)) ?? null;
+
+  const handleAddToCart = async () => {
+    if (isCatalogLoading) {
+      setToastMessage("Loading products...");
+      return;
+    }
+
+    if (!matchedProduct) {
+      setToastMessage("This build isn't available yet.");
+      return;
+    }
+
+    await addItem(matchedProduct);
+    setToastMessage("Added to cart!");
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f7f5] pb-20 pt-8">
@@ -291,7 +364,12 @@ export default function BuildPage() {
                   <p className="text-sm text-[#91A57D] font-medium">Ships in 2-3 weeks</p>
                 </div>
                 
-                <button className="w-full bg-[#91A57D] hover:bg-[#839670] text-white py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#91A57D]/30">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isCatalogLoading || !matchedProduct}
+                  aria-disabled={isCatalogLoading || !matchedProduct}
+                  className="w-full bg-[#91A57D] hover:bg-[#839670] text-white py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#91A57D]/30 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
                   <ShoppingCart size={22} />
                   Add to Cart
                 </button>
@@ -302,6 +380,19 @@ export default function BuildPage() {
 
         </div>
       </div>
+
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 right-6 z-50 bg-[#91A57D] text-white px-5 py-3 rounded-2xl shadow-xl"
+          >
+            {toastMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

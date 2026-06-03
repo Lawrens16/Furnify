@@ -1,8 +1,12 @@
 "use client";
 
-import { ArrowRight, ShoppingCart, X } from "lucide-react";
-import { useState } from "react";
+import { ShoppingCart, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useCart } from "@/context/CartContext";
+import { getProducts } from "@/lib/actions/products";
+import { normalizeProductName } from "@/lib/utils";
+import type { Product } from "@/types/database";
 
 type ProductType = {
   title: string;
@@ -16,8 +20,13 @@ type ProductType = {
 };
 
 export default function ShopPage() {
+  const { addItem } = useCart();
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const categories = ["All", "Sofa", "Table", "Chair", "Bed", "Lamp", "Modern Furniture", "Interior"];
 
@@ -36,6 +45,75 @@ export default function ShopPage() {
   const filteredProducts = activeCategory === "All" 
     ? products 
     : products.filter(product => product.category === activeCategory);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProducts = async () => {
+      const data = await getProducts();
+      if (isMounted) {
+        setCatalogProducts(data);
+        setIsCatalogLoading(false);
+      }
+    };
+
+    loadProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!toastMessage) {
+      return;
+    }
+
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
+
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMessage(null);
+    }, 2000);
+
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, [toastMessage]);
+
+  const catalogByName = useMemo(() => {
+    const map = new Map<string, Product>();
+    catalogProducts.forEach((product) => {
+      map.set(normalizeProductName(product.name), product);
+    });
+    return map;
+  }, [catalogProducts]);
+
+  const resolveCatalogProduct = (product: ProductType) =>
+    catalogByName.get(normalizeProductName(product.title)) ?? null;
+
+  const handleAddToCart = async (product: ProductType) => {
+    if (isCatalogLoading) {
+      setToastMessage("Loading products...");
+      return;
+    }
+
+    const catalogProduct = resolveCatalogProduct(product);
+    if (!catalogProduct) {
+      setToastMessage("This item isn't available yet.");
+      return;
+    }
+
+    await addItem(catalogProduct);
+    setToastMessage("Added to cart!");
+  };
+
+  const selectedCatalogProduct = selectedProduct
+    ? resolveCatalogProduct(selectedProduct)
+    : null;
 
   return (
     <div className="w-full">
@@ -68,35 +146,45 @@ export default function ShopPage() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product, idx) => (
-            <div 
-              key={idx} 
-              onClick={() => setSelectedProduct(product)}
-              className="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col"
-            >
-              <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-6 bg-[#f1ede7]">
-                <img 
-                  src={product.image} 
-                  alt={product.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                />
-              </div>
-              <div className="px-2 pb-2 flex justify-between items-end flex-1">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">{product.title}</h3>
-                  <p className="text-lg font-semibold text-[#91A57D]">{product.price}</p>
+          {filteredProducts.map((product, idx) => {
+            const catalogProduct = resolveCatalogProduct(product);
+            const isDisabled = isCatalogLoading || !catalogProduct;
+
+            return (
+              <div 
+                key={idx} 
+                onClick={() => setSelectedProduct(product)}
+                className="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col"
+              >
+                <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-6 bg-[#f1ede7]">
+                  <img 
+                    src={product.image} 
+                    alt={product.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                  />
                 </div>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevents opening modal when clicking cart explicitly
-                  }}
-                  className="w-12 h-12 rounded-full bg-[#f4f3f0] flex items-center justify-center group-hover:bg-[#91A57D] group-hover:text-white transition-colors duration-300"
-                >
-                  <ShoppingCart size={20} className="transform group-hover:scale-110 transition-transform" />
-                </button>
+                <div className="px-2 pb-2 flex justify-between items-end flex-1">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{product.title}</h3>
+                    <p className="text-lg font-semibold text-[#91A57D]">{product.price}</p>
+                  </div>
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleAddToCart(product);
+                    }}
+                    disabled={isDisabled}
+                    aria-disabled={isDisabled}
+                    aria-label="Add to cart"
+                    title={isDisabled ? "Unavailable" : "Add to cart"}
+                    className="w-12 h-12 rounded-full bg-[#f4f3f0] flex items-center justify-center group-hover:bg-[#91A57D] group-hover:text-white transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <ShoppingCart size={20} className="transform group-hover:scale-110 transition-transform" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {filteredProducts.length === 0 && (
@@ -175,12 +263,36 @@ export default function ShopPage() {
                 </div>
               </div>
 
-              <button className="w-full bg-[#91A57D] hover:bg-[#7a8d67] text-white py-4 rounded-xl font-bold text-lg shadow-sm transition-colors flex items-center justify-center gap-2">
+              <button
+                onClick={() => handleAddToCart(selectedProduct)}
+                disabled={
+                  isCatalogLoading ||
+                  !selectedCatalogProduct
+                }
+                aria-disabled={
+                  isCatalogLoading ||
+                  !selectedCatalogProduct
+                }
+                className="w-full bg-[#91A57D] hover:bg-[#7a8d67] text-white py-4 rounded-xl font-bold text-lg shadow-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
                 <ShoppingCart size={22} />
                 Add to Cart
               </button>
             </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 right-6 z-50 bg-[#91A57D] text-white px-5 py-3 rounded-2xl shadow-xl"
+          >
+            {toastMessage}
           </motion.div>
         )}
       </AnimatePresence>
