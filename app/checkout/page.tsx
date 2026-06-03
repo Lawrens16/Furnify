@@ -4,8 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/ui/footer-section";
 import { useCart } from "@/context/CartContext";
 import { placeOrder } from "@/lib/actions/orders";
 import type { CheckoutFormData } from "@/types/database";
@@ -122,8 +120,6 @@ export default function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-[#e8e7e3] text-gray-900 font-sans selection:bg-[#91A57D] selection:text-white">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 md:px-8 pt-12 pb-6">
         <p className="text-sm text-gray-400">Cart  Checkout</p>
         <h1 className="text-4xl font-bold mt-2">Checkout</h1>
@@ -378,7 +374,6 @@ export default function CheckoutPage() {
         )}
       </AnimatePresence>
 
-      <Footer />
     </main>
   );
 }

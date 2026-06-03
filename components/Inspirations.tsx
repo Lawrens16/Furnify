@@ -7,29 +7,29 @@ import { useState } from "react";
 export default function Inspirations() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
-  const testimonials = [
-    {
-      id: 1,
-      text: "The 3D view feature completely changed how I shop for furniture. Being able to see the exact size and texture of the sofa before buying meant it fit perfectly in my living room. Outstanding quality too!",
-      name: "Sarah Jenkins",
-      role: "Interior Designer",
-      image: "https://placehold.co/100x100.png",
-    },
-    {
-      id: 2,
-      text: "Furnify has amazing customer service and fast shipping. The olive green accent chair I bought matched their 3D model perfectly. I couldn't be happier with the fast delivery and easy assembly.",
-      name: "Michael Chen",
-      role: "Homeowner",
-      image: "https://placehold.co/100x100.png",
-    },
-    {
-      id: 3,
-      text: "I was skeptical about buying an expensive dining table online, but Furnify's modern selection and realistic textures gave me confidence. It looks incredible and sturdy in real life.",
-      name: "Emily Rodriguez",
-      role: "Architect",
-      image: "https://placehold.co/100x100.png",
-    },
-  ];
+const testimonials = [
+  {
+    id: 1,
+    text: "The 3D view feature completely changed how I shop for furniture. Being able to see the exact size and texture of the sofa before buying meant it fit perfectly in my living room. Outstanding quality too!",
+    name: "Sarah Jenkins",
+    role: "Interior Designer",
+    image: "/persons_img/sarah.jpg",
+  },
+  {
+    id: 2,
+    text: "Furnify has amazing customer service and fast shipping. The olive green accent chair I bought matched their 3D model perfectly. I couldn't be happier with the fast delivery and easy assembly.",
+    name: "Michael Chen",
+    role: "Homeowner",
+    image: "/persons_img/michael.jpg",
+  },
+  {
+    id: 3,
+    text: "I was skeptical about buying an expensive dining table online, but Furnify's modern selection and realistic textures gave me confidence. It looks incredible and sturdy in real life.",
+    name: "Emily Rodriguez",
+    role: "Architect",
+    image: "/persons_img/emily.jpg",
+  },
+];
 
   const handlePrev = () => {
     setCurrentTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
@@ -62,13 +62,13 @@ export default function Inspirations() {
           <div className="lg:w-2/3 flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory hide-scroll-bar">
             {/* Main Image */}
             <div className="min-w-[280px] md:min-w-[400px] h-[500px] flex-shrink-0 snap-center relative rounded-3xl overflow-hidden shadow-xl group">
-              <img src="https://placehold.co/400x500.png" alt="Inspiration 1" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+              <img src="/product_img/minimalist_bedroom.jpg" alt="Inspiration 1" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-sm">
                  <div>
                    <h4 className="font-bold text-gray-900 text-sm">Minimalist Bedroom</h4>
                    <p className="text-xs text-gray-500">2 Items</p>
                  </div>
-                 <button className="w-10 h-10 rounded-full bg-[#91A57D] text-white flex items-center justify-center hover:scale-110 transition-transform">
+                 <button className="w-10 h-10 rounded-full bg-[#5a6450] text-white flex items-center justify-center hover:scale-110 transition-transform">
                    <ArrowRight size={16} />
                  </button>
               </div>
@@ -76,11 +76,11 @@ export default function Inspirations() {
 
             {/* Smaller Gallery Images */}
             <div className="min-w-[240px] md:min-w-[320px] h-[450px] mt-12 flex-shrink-0 snap-center relative rounded-3xl overflow-hidden shadow-lg group">
-              <img src="https://placehold.co/320x450.png" alt="Inspiration 2" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+              <img src="/product_img/inspire3.jpg" alt="Inspiration 2" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
             </div>
 
             <div className="min-w-[240px] md:min-w-[320px] h-[450px] mt-12 flex-shrink-0 snap-center relative rounded-3xl overflow-hidden shadow-lg group">
-              <img src="https://placehold.co/320x450.png" alt="Inspiration 3" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+              <img src="/product_img/inspire2.jpg" alt="Inspiration 3" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
             </div>
           </div>
         </div>

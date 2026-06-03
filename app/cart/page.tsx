@@ -4,8 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/ui/footer-section";
 import { useCart } from "@/context/CartContext";
 
 function formatPrice(value: number) {
@@ -21,8 +19,6 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen bg-[#e8e7e3] text-gray-900 font-sans selection:bg-[#91A57D] selection:text-white">
-      <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
         <div className="flex flex-wrap items-center gap-4 mb-10">
           <h1 className="text-4xl font-bold">Your Cart</h1>
@@ -177,7 +173,6 @@ export default function CartPage() {
         </AnimatePresence>
       </div>
 
-      <Footer />
     </main>
   );
 }

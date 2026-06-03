@@ -2,14 +2,10 @@
 
 import { motion } from "framer-motion";
 import { MapPin, Mail, Phone, Clock } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/ui/footer-section";
 
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#e8e7e3] text-gray-900 font-sans selection:bg-[#91A57D] selection:text-white">
-      <Navbar />
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -138,7 +134,6 @@ export default function ContactPage() {
         </div>
       </motion.div>
 
-      <Footer />
     </main>
   );
 }

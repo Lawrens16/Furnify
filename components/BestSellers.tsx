@@ -191,47 +191,7 @@ export default function BestSellers() {
           )}
         </AnimatePresence>
 
-        {/* Super Sale Banner */}
-        <div className="w-full bg-[#91A57D] rounded-3xl md:rounded-[4rem] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between text-white shadow-2xl relative overflow-hidden">
-          {/* Subtle bg Decoration */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/4 pointer-events-none"></div>
-
-          <div className="md:w-1/2 z-10 w-full mb-10 md:mb-0">
-            <span className="uppercase tracking-widest text-sm font-bold text-white/80 mb-4 block">Limited Time Offer</span>
-            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">Super Sale <br /> Up To 50% Off</h2>
-            
-            {/* Countdown */}
-            <div className="flex gap-4 md:gap-6 mb-8 text-center text-gray-900 font-bold">
-              <div className="bg-white px-4 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl shadow-xl w-16 md:w-24">
-                <span className="text-2xl md:text-3xl block text-[#91A57D]">05</span>
-                <span className="text-xs md:text-sm text-gray-500 uppercase">Days</span>
-              </div>
-              <div className="bg-white px-4 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl shadow-xl w-16 md:w-24">
-                <span className="text-2xl md:text-3xl block text-[#91A57D]">12</span>
-                <span className="text-xs md:text-sm text-gray-500 uppercase">Hrs</span>
-              </div>
-              <div className="bg-white px-4 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl shadow-xl w-16 md:w-24">
-                <span className="text-2xl md:text-3xl block text-[#91A57D]">45</span>
-                <span className="text-xs md:text-sm text-gray-500 uppercase">Mins</span>
-              </div>
-              <div className="bg-white px-4 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl shadow-xl w-16 md:w-24">
-                <span className="text-2xl md:text-3xl block text-[#91A57D]">20</span>
-                <span className="text-xs md:text-sm text-gray-500 uppercase">Secs</span>
-              </div>
-            </div>
-
-            <button className="bg-white text-gray-900 hover:bg-gray-100 font-semibold px-8 py-4 rounded-full transition-all duration-200 w-full md:w-auto shadow-lg hover:shadow-xl hover:-translate-y-1 transform">
-              Shop Now
-            </button>
-          </div>
-
-          <div className="md:w-1/2 z-10 w-full flex justify-center md:justify-end relative">
-             <div className="absolute top-4 right-4 bg-[#e8e7e3] text-[#91A57D] p-3 rounded-full flex items-center justify-center shadow-lg z-20" title="3D View Available">
-                <Box size={24} />
-             </div>
-             <img src="https://placehold.co/800x600.png" alt="Super Sale Sofa" className="w-full max-w-lg object-cover rounded-2xl md:rounded-3xl shadow-2xl skew-y-3 md:skew-y-2 hover:skew-y-0 transition-transform duration-500" />
-          </div>
-        </div>
+        
 
       </div>
     </section>

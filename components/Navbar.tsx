@@ -15,13 +15,13 @@ export default function Navbar() {
           <Link href="/" className="text-2xl font-bold tracking-tight text-gray-900">
             Furnify
           </Link>
-          <div className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
-            <Link href="/" className="hover:text-[#91A57D] transition-colors">Home</Link>
-            <Link href="/shop" className="hover:text-[#91A57D] transition-colors">Shop</Link>
-            <Link href="/product" className="hover:text-[#91A57D] transition-colors">Product</Link>
-            <Link href="/about" className="hover:text-[#91A57D] transition-colors">About Us</Link>
-            <Link href="/contact" className="hover:text-[#91A57D] transition-colors">Contact Us</Link>
-            <Link href="/blog" className="hover:text-[#91A57D] transition-colors">Blog</Link>
+          <div className="hidden md:flex gap-3 text-sm font-medium text-gray-700">
+            <Link href="/" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">Home</Link>
+            <Link href="/shop" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">Shop</Link>
+            <Link href="/build" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">Build</Link>
+            <Link href="/about" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">About Us</Link>
+            <Link href="/contact" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">Contact Us</Link>
+            
           </div>
         </div>
         <div className="flex items-center gap-4">

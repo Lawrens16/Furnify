@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/ui/footer-section";
 import { CartProvider } from "@/context/CartContext";
 import FloatingCart from "@/components/FloatingCart";
 import "./globals.css";
@@ -24,9 +26,11 @@ export default function RootLayout({
       lang="en"
       className={`${interSans.variable} font-sans antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#e8e7e3] text-gray-900">
+      <body className="min-h-full flex flex-col bg-[#e8e7e3] text-gray-900 selection:bg-[#91A57D] selection:text-white">
         <CartProvider>
-          {children}
+            <Navbar />
+                {children}
+            <Footer />
           <FloatingCart />
         </CartProvider>
       </body>
