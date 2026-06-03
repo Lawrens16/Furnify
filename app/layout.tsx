@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/ui/footer-section";
 import "./globals.css";
 
 const interSans = Inter({
@@ -22,7 +24,11 @@ export default function RootLayout({
       lang="en"
       className={`${interSans.variable} font-sans antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#e8e7e3] text-gray-900">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#e8e7e3] text-gray-900 selection:bg-[#91A57D] selection:text-white">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }

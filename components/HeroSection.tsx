@@ -1,7 +1,76 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, ShoppingBag, Truck, Headset, ShieldCheck, Box } from "lucide-react";
+import { ArrowRight, ShoppingBag, Truck, Headset, ShieldCheck, Sparkles } from "lucide-react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Environment, ContactShadows, Center, Bounds } from "@react-three/drei";
+import { Suspense } from "react";
+
+function Chair({ position, rotation }: { position: [number, number, number]; rotation?: [number, number, number] }) {
+  return (
+    <group position={position} rotation={rotation}>
+      <mesh castShadow receiveShadow position={[0, 0.38, 0]}>
+        <boxGeometry args={[0.5, 0.08, 0.5]} />
+        <meshStandardMaterial color="#cbbda8" roughness={0.55} />
+      </mesh>
+      <mesh castShadow receiveShadow position={[0, 0.7, -0.2]}>
+        <boxGeometry args={[0.5, 0.6, 0.08]} />
+        <meshStandardMaterial color="#b8aa96" roughness={0.6} />
+      </mesh>
+      {[
+        [-0.18, 0.2, -0.18],
+        [0.18, 0.2, -0.18],
+        [-0.18, 0.2, 0.18],
+        [0.18, 0.2, 0.18],
+      ].map((leg, index) => (
+        <mesh key={index} castShadow receiveShadow position={leg as [number, number, number]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.4, 16]} />
+          <meshStandardMaterial color="#7f6f5d" roughness={0.7} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function DiningSet() {
+  return (
+    <group>
+      <mesh castShadow receiveShadow position={[0, 0.75, 0]}>
+        <cylinderGeometry args={[1.1, 1.1, 0.08, 48]} />
+        <meshStandardMaterial color="#e7ddcf" roughness={0.45} metalness={0.05} />
+      </mesh>
+      <mesh castShadow receiveShadow position={[0, 0.5, 0]}>
+        <cylinderGeometry args={[0.14, 0.16, 0.5, 24]} />
+        <meshStandardMaterial color="#a8947f" roughness={0.6} />
+      </mesh>
+      {[
+        [-0.7, 0.25, -0.7],
+        [0.7, 0.25, -0.7],
+        [-0.7, 0.25, 0.7],
+        [0.7, 0.25, 0.7],
+      ].map((leg, index) => (
+        <mesh key={index} castShadow receiveShadow position={leg as [number, number, number]}>
+          <cylinderGeometry args={[0.06, 0.07, 0.5, 18]} />
+          <meshStandardMaterial color="#8a7561" roughness={0.6} />
+        </mesh>
+      ))}
+
+      <Chair position={[-1.25, 0, 0]} rotation={[0, Math.PI / 2, 0]} />
+      <Chair position={[1.25, 0, 0]} rotation={[0, -Math.PI / 2, 0]} />
+      <Chair position={[0, 0, -1.25]} rotation={[0, 0, 0]} />
+      <Chair position={[0, 0, 1.25]} rotation={[0, Math.PI, 0]} />
+
+      <mesh castShadow receiveShadow position={[0.7, 0.35, 0.6]}>
+        <cylinderGeometry args={[0.05, 0.06, 0.7, 20]} />
+        <meshStandardMaterial color="#c2b59b" roughness={0.4} metalness={0.2} />
+      </mesh>
+      <mesh castShadow receiveShadow position={[0.7, 0.8, 0.6]}>
+        <coneGeometry args={[0.28, 0.35, 24]} />
+        <meshStandardMaterial color="#f2eee7" roughness={0.25} emissive="#f6f0e8" emissiveIntensity={0.15} />
+      </mesh>
+    </group>
+  );
+}
 
 export default function HeroSection() {
   return (
@@ -21,18 +90,15 @@ export default function HeroSection() {
           </h1>
         </motion.div>
 
-        {/* Sofa Placeholder */}
+        {/* Hero Visual Area */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative w-full max-w-5xl px-4 mt-8 flex-1 flex items-end justify-center z-0"
+          // Change the min-h values here to control the green card height
+          className="relative w-full max-w-6xl px-4 mt-8 flex-1 min-h-[300px] sm:min-h-[400px] lg:min-h-[430px] flex items-center justify-center z-0 rounded-t-3xl"
         >
-          <img
-            src="https://placehold.co/1200x600.png"
-            alt="Modern sofa"
-            className="w-full object-cover object-bottom shadow-2xl rounded-t-3xl"
-          />
+          <div className="h-full w-full max-w-4xl rounded-3xl bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),_rgba(167,184,153,0.25)_45%,_rgba(145,165,125,0.2)_100%)]" />
         </motion.div>
 
         {/* Floating Card: Furniture Design Ideas */}
@@ -40,11 +106,11 @@ export default function HeroSection() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="absolute left-8 bottom-32 md:bottom-48 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl w-64 text-gray-900 border border-white/20"
+          className="absolute left-8 bottom-32 md:bottom-48 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl max-w-xs md:max-w-sm text-gray-900 border border-white/20"
         >
           <div className="flex items-center gap-2 mb-2 text-[#91A57D]">
-            <Box size={16} />
-            <span className="text-xs font-bold uppercase tracking-wider">3D View Available</span>
+            <Sparkles size={16} />
+            <span className="text-xs font-bold uppercase tracking-wider">Premium Collection</span>
           </div>
           <h3 className="font-bold text-lg mb-2">Furniture Design Ideas</h3>
           <p className="text-sm text-gray-600 mb-4 line-clamp-2">

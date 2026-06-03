@@ -2,6 +2,160 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { Canvas } from "@react-three/fiber";
+import { Bounds, Center, ContactShadows, Environment, OrbitControls } from "@react-three/drei";
+import { Suspense } from "react";
+
+type CategoryKind = "table" | "chair" | "light";
+
+function TableModel() {
+  return (
+    <group position={[0, -0.25, 0]}>
+      {/* Dark Modern Stone Top */}
+      <mesh castShadow receiveShadow position={[0, 0.6, 0]}>
+        <cylinderGeometry args={[0.72, 0.72, 0.05, 64]} />
+        <meshStandardMaterial color="#2c2c2c" roughness={0.15} metalness={0.2} />
+      </mesh>
+      {/* Luxury Metallic Rim */}
+      <mesh castShadow receiveShadow position={[0, 0.6, 0]}>
+        <torusGeometry args={[0.72, 0.025, 16, 64]} />
+        <meshStandardMaterial color="#cfa461" roughness={0.2} metalness={0.8} />
+      </mesh>
+      
+      {/* Ribbed Wooden Pedestal Base */}
+      <mesh castShadow receiveShadow position={[0, 0.3, 0]}>
+        <cylinderGeometry args={[0.26, 0.36, 0.58, 48]} />
+        <meshStandardMaterial color="#4a3b2c" roughness={0.7} />
+      </mesh>
+      
+      {/* Centerpiece Decorative Bowl */}
+      <mesh castShadow receiveShadow position={[0, 0.64, 0]}>
+        <sphereGeometry args={[0.18, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color="#e3ddd5" roughness={0.3} metalness={0.1} side={2} />
+      </mesh>
+    </group>
+  );
+}
+
+function ChairModel() {
+  return (
+    <group position={[0, -0.25, 0]}>
+      {/* Luxury Velvet Seat Cushion */}
+      <mesh castShadow receiveShadow position={[0, 0.35, 0.05]}>
+        <cylinderGeometry args={[0.38, 0.38, 0.12, 48]} />
+        <meshStandardMaterial color="#556b50" roughness={0.9} />
+      </mesh>
+      <mesh castShadow receiveShadow position={[0, 0.41, 0.05]}>
+        <torusGeometry args={[0.36, 0.02, 16, 48]} />
+        <meshStandardMaterial color="#556b50" roughness={0.9} />
+      </mesh>
+      
+      {/* Sweeping Velvet Backrest/Armrest */}
+      <mesh castShadow receiveShadow position={[0, 0.55, 0.05]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.38, 0.14, 32, 64, Math.PI]} />
+        <meshStandardMaterial color="#556b50" roughness={0.9} />
+      </mesh>
+      {/* Seamless armrest caps */}
+      <mesh castShadow receiveShadow position={[-0.38, 0.43, 0.05]}>
+        <sphereGeometry args={[0.14, 32, 32]} />
+        <meshStandardMaterial color="#556b50" roughness={0.9} />
+      </mesh>
+      <mesh castShadow receiveShadow position={[0.38, 0.43, 0.05]}>
+        <sphereGeometry args={[0.14, 32, 32]} />
+        <meshStandardMaterial color="#556b50" roughness={0.9} />
+      </mesh>
+
+      {/* Sleek Matte Metal Legs */}
+      {[
+        [-0.22, 0.175, 0.22, 0.1, 0, 0.1],
+        [0.22, 0.175, 0.22, 0.1, 0, -0.1],
+        [-0.22, 0.175, -0.15, -0.1, 0, 0.1],
+        [0.22, 0.175, -0.15, -0.1, 0, -0.1],
+      ].map((leg, index) => (
+        <mesh key={index} castShadow receiveShadow position={[leg[0], leg[1], leg[2]]} rotation={[leg[3], leg[4], leg[5]]}>
+          <cylinderGeometry args={[0.015, 0.01, 0.35, 16]} />
+          <meshStandardMaterial color="#222222" roughness={0.3} metalness={0.7} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function LampModel() {
+  return (
+    <group position={[0, -0.15, 0]}>
+      {/* Solid Black Minimalist Base */}
+      <mesh castShadow receiveShadow position={[0, 0.04, 0]}>
+        <cylinderGeometry args={[0.22, 0.24, 0.08, 48]} />
+        <meshStandardMaterial color="#222222" roughness={0.3} metalness={0.5} />
+      </mesh>
+      
+      {/* Elegant Brass Stem */}
+      <mesh castShadow receiveShadow position={[0, 0.33, 0]}>
+        <cylinderGeometry args={[0.025, 0.035, 0.58, 32]} />
+        <meshStandardMaterial color="#d9ae6c" roughness={0.15} metalness={0.8} />
+      </mesh>
+      
+      {/* Soft Internal Glowing Bulb */}
+      <mesh position={[0, 0.68, 0]}>
+        <sphereGeometry args={[0.12, 32, 32]} />
+        <meshBasicMaterial color="#ffe4b8" />
+      </mesh>
+      
+      {/* Premium Translucent Mushroom Dome Glass */}
+      <mesh castShadow receiveShadow position={[0, 0.68, 0]}>
+        <sphereGeometry args={[0.38, 64, 32, 0, Math.PI * 2, 0, Math.PI / 1.6]} />
+        <meshPhysicalMaterial 
+          color="#ffffff" 
+          roughness={0.15} 
+          transmission={0.8} 
+          transparent 
+          opacity={0.85} 
+          metalness={0.05}
+          side={2}
+        />
+      </mesh>
+      
+      {/* Brass Finial Top */}
+      <mesh castShadow receiveShadow position={[0, 0.88, 0]}>
+        <cylinderGeometry args={[0.03, 0.03, 0.05, 16]} />
+        <meshStandardMaterial color="#d9ae6c" roughness={0.15} metalness={0.8} />
+      </mesh>
+    </group>
+  );
+}
+
+function CategoryModel({ kind }: { kind: CategoryKind }) {
+  return (
+    <Canvas dpr={[1, 1.5]} frameloop="always" camera={{ position: [0, 1.1, 2.4], fov: 36 }}>
+      <Suspense fallback={null}>
+        <color attach="background" args={["#efe4d6"]} />
+        <ambientLight intensity={0.75} />
+        <directionalLight intensity={1.35} position={[3.1, 3.8, 2.4]} />
+        <directionalLight intensity={0.75} position={[-2.8, 2.2, -1.7]} />
+        <pointLight intensity={0.35} position={[0.8, 1.2, 0.8]} color="#ffe2bf" />
+        <Environment preset="studio" />
+        <Bounds fit observe margin={1.3}>
+          <Center>
+            <group rotation={[0, -0.35, 0]}>
+              {kind === "table" && <TableModel />}
+              {kind === "chair" && <ChairModel />}
+              {kind === "light" && <LampModel />}
+            </group>
+          </Center>
+        </Bounds>
+        <ContactShadows position={[0, 0.02, 0]} opacity={0.55} scale={2.7} blur={2.8} far={1.75} />
+        <OrbitControls
+          enableZoom={false}
+          autoRotate
+          autoRotateSpeed={1.2}
+          enableDamping
+          dampingFactor={0.08}
+        />
+      </Suspense>
+    </Canvas>
+  );
+}
 
 export default function Categories() {
   const categories = [
@@ -9,21 +163,21 @@ export default function Categories() {
       title: "Table",
       count: "1200+ Items",
       types: ["Dining Table", "Coffee Table", "Side Table"],
-      image: "https://placehold.co/300x300.png",
+      kind: "table",
       link: "#",
     },
     {
       title: "Chairs",
       count: "800+ Items",
       types: ["Armchair", "Lounge Chair", "Dining Chair"],
-      image: "https://placehold.co/300x300.png",
+      kind: "chair",
       link: "#",
     },
     {
       title: "Light",
       count: "500+ Items",
       types: ["Floor Lamp", "Pendant Light", "Table Lamp"],
-      image: "https://placehold.co/300x300.png",
+      kind: "light",
       link: "#",
     },
   ];
@@ -62,11 +216,9 @@ export default function Categories() {
                   <h4 className="text-2xl font-bold text-gray-900 mb-1">{cat.title}</h4>
                   <p className="text-sm font-medium text-[#91A57D] bg-[#91A57D]/10 inline-block px-3 py-1 rounded-full">{cat.count}</p>
                 </div>
-                <img
-                  src={cat.image}
-                  alt={cat.title}
-                  className="w-24 h-24 object-cover rounded-2xl shadow-sm bg-gray-100"
-                />
+                <div className="w-24 h-24 rounded-2xl shadow-sm bg-[#f1ede7] overflow-hidden">
+                  <CategoryModel kind={cat.kind as CategoryKind} />
+                </div>
               </div>
 
               <div className="flex flex-col gap-2 mb-6 flex-1">
