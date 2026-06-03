@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/ui/footer-section";
 import { CartProvider } from "@/context/CartContext";
 import FloatingCart from "@/components/FloatingCart";
 import "./globals.css";
