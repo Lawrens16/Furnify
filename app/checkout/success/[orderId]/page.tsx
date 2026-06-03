@@ -5,8 +5,6 @@ import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/ui/footer-section";
 import { getOrderById } from "@/lib/actions/orders";
 import type { OrderWithItems } from "@/types/database";
 
@@ -37,8 +35,6 @@ export default function OrderSuccessPage() {
 
   return (
     <main className="min-h-screen bg-[#e8e7e3] text-gray-900 font-sans selection:bg-[#91A57D] selection:text-white">
-      <Navbar />
-
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -139,7 +135,6 @@ export default function OrderSuccessPage() {
         </motion.div>
       </div>
 
-      <Footer />
     </main>
   );
 }
