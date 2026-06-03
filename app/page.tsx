@@ -8,7 +8,6 @@ export default function Home() {
     <div className="w-full">
       <HeroSection />
       <Categories />
-      <BestSellers />
       <Inspirations />
     </div>
   );
