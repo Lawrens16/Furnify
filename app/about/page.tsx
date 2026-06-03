@@ -40,7 +40,7 @@ export default function AboutPage() {
             className="w-full rounded-3xl overflow-hidden shadow-2xl relative h-[300px] md:h-[500px]"
           >
             <img
-              src="https://placehold.co/1200x500.png"
+              src="/product_img/living_room.jpg"
               alt="Beautiful living space"
               className="w-full h-full object-cover"
             />
@@ -59,7 +59,7 @@ export default function AboutPage() {
               className="flex flex-col items-center text-center bg-white p-10 rounded-t-[4rem] rounded-b-[2rem] shadow-sm hover:shadow-xl transition-all"
             >
               <img
-                src="https://placehold.co/400x400.png"
+                src="/persons_img/lawrence.jpg"
                 alt="Lawrence Magnetico"
                 className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover mb-8 shadow-lg border-4 border-[#e8e7e3]"
               />
@@ -93,7 +93,7 @@ export default function AboutPage() {
               className="flex flex-col items-center text-center bg-white p-10 rounded-t-[4rem] rounded-b-[2rem] shadow-sm hover:shadow-xl transition-all"
             >
               <img
-                src="https://placehold.co/400x400.png"
+                src="/persons_img/jp.jpg"
                 alt="John Paul Macanas"
                 className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover mb-8 shadow-lg border-4 border-[#e8e7e3]"
               />

@@ -21,7 +21,7 @@ export default function Navbar() {
             <Link href="/build" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">Build</Link>
             <Link href="/about" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">About Us</Link>
             <Link href="/contact" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">Contact Us</Link>
-            <Link href="/blog" className="px-4 py-2 rounded-full bg-white/70 hover:bg-white text-gray-700 hover:text-[#91A57D] transition-colors shadow-sm">Blog</Link>
+            
           </div>
         </div>
         <div className="flex items-center gap-4">
