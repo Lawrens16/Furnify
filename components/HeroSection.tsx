@@ -76,16 +76,16 @@ export default function HeroSection() {
   return (
     <section className="w-full px-4 md:px-8 pb-12 pt-4 bg-[#e8e7e3]">
       {/* Hero Container */}
-      <div className="relative w-full rounded-t-[3rem] rounded-bl-[4rem] rounded-br-3xl bg-[#91A57D] overflow-hidden min-h-[600px] flex flex-col items-center justify-between text-white shadow-xl">
+      <div className="relative w-full rounded-t-[3rem] rounded-bl-[4rem] rounded-br-3xl bg-[#91A57D] overflow-hidden min-h-[480px] flex flex-col items-center justify-between text-white shadow-xl">
         
         {/* Headline */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mt-16 text-center z-10"
+          className="mt-10 text-center z-10 px-4"
         >
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter w-full max-w-4xl mx-auto leading-tight drop-shadow-md">
+          <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter w-full max-w-5xl mx-auto leading-none drop-shadow-lg">
             Discover Your Perfect Space
           </h1>
         </motion.div>
@@ -96,7 +96,7 @@ export default function HeroSection() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           // Change the min-h values here to control the green card height
-          className="relative w-full max-w-6xl px-4 mt-8 flex-1 min-h-[300px] sm:min-h-[400px] lg:min-h-[430px] flex items-center justify-center z-0 rounded-t-3xl"
+          className="relative w-full max-w-6xl px-4 mt-6 flex-1 min-h-[180px] sm:min-h-[240px] lg:min-h-[280px] flex items-center justify-center z-0 rounded-t-3xl"
         >
           <div className="h-full w-full max-w-4xl rounded-3xl bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),_rgba(167,184,153,0.25)_45%,_rgba(145,165,125,0.2)_100%)]" />
         </motion.div>
@@ -106,7 +106,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="absolute left-8 bottom-32 md:bottom-48 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl max-w-xs md:max-w-sm text-gray-900 border border-white/20"
+          className="absolute left-8 bottom-20 md:bottom-32 bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-xl max-w-xs md:max-w-sm text-gray-900 border border-white/20"
         >
           <div className="flex items-center gap-2 mb-2 text-[#91A57D]">
             <Sparkles size={16} />

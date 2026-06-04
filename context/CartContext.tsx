@@ -16,9 +16,19 @@ import {
   removeFromCart,
   updateCartItemQuantity,
 } from "@/lib/actions/cart";
+import {
+  type LocalCartItem,
+  getLocalCart,
+  addLocalShopItem,
+  addLocalBuildItem,
+  updateLocalItemQuantity,
+  removeLocalItem as removeLocalItemUtil,
+  clearLocalCart,
+} from "@/lib/localCart";
 
 type CartState = {
   items: CartItemWithProduct[];
+  localItems: LocalCartItem[];
   itemCount: number;
   subtotal: number;
   sessionId: string;
@@ -27,8 +37,12 @@ type CartState = {
   openDrawer: () => void;
   closeDrawer: () => void;
   addItem: (product: Product) => Promise<void>;
+  addLocalShopItem: (name: string, price: number, image: string) => void;
+  addLocalBuildItem: (shape: string, fabric: string, fabricColor: string, legs: string, price: number) => void;
   removeItem: (productId: string) => Promise<void>;
+  removeLocalCartItem: (id: string) => void;
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
+  updateLocalQuantity: (id: string, quantity: number) => void;
   clearItems: () => Promise<void>;
 };
 
@@ -55,9 +69,15 @@ export function CartProvider({
   children: React.ReactNode;
 }) {
   const [items, setItems] = useState<CartItemWithProduct[]>([]);
+  const [localItems, setLocalItems] = useState<LocalCartItem[]>([]);
   const [sessionId, setSessionId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Initialise local cart from localStorage once on mount
+  useEffect(() => {
+    setLocalItems(getLocalCart());
+  }, []);
 
   const refreshCart = useCallback(async (activeSessionId: string) => {
     setIsLoading(true);
@@ -146,12 +166,16 @@ export function CartProvider({
     }
 
     await clearCart(activeSessionId);
+    clearLocalCart();
+    setLocalItems([]);
     await refreshCart(activeSessionId);
   }, [ensureSessionId, refreshCart]);
 
   const itemCount = useMemo(
-    () => items.reduce((total, item) => total + item.quantity, 0),
-    [items],
+    () =>
+      items.reduce((total, item) => total + item.quantity, 0) +
+      localItems.reduce((total, item) => total + item.quantity, 0),
+    [items, localItems],
   );
 
   const subtotal = useMemo(
@@ -159,13 +183,38 @@ export function CartProvider({
       items.reduce(
         (total, item) => total + Number(item.product.price) * item.quantity,
         0,
-      ),
-    [items],
+      ) +
+      localItems.reduce((total, item) => total + item.price * item.quantity, 0),
+    [items, localItems],
   );
+
+  // --- Local cart actions ---
+  const addLocalShopItemAction = useCallback(
+    (name: string, price: number, image: string) => {
+      setLocalItems(addLocalShopItem(name, price, image));
+    },
+    [],
+  );
+
+  const addLocalBuildItemAction = useCallback(
+    (shape: string, fabric: string, fabricColor: string, legs: string, price: number) => {
+      setLocalItems(addLocalBuildItem(shape, fabric, fabricColor, legs, price));
+    },
+    [],
+  );
+
+  const removeLocalCartItem = useCallback((id: string) => {
+    setLocalItems(removeLocalItemUtil(id));
+  }, []);
+
+  const updateLocalQuantity = useCallback((id: string, quantity: number) => {
+    setLocalItems(updateLocalItemQuantity(id, quantity));
+  }, []);
 
   const value = useMemo(
     () => ({
       items,
+      localItems,
       itemCount,
       subtotal,
       sessionId,
@@ -174,12 +223,17 @@ export function CartProvider({
       openDrawer,
       closeDrawer,
       addItem,
+      addLocalShopItem: addLocalShopItemAction,
+      addLocalBuildItem: addLocalBuildItemAction,
       removeItem,
+      removeLocalCartItem,
       updateQuantity,
+      updateLocalQuantity,
       clearItems,
     }),
     [
       items,
+      localItems,
       itemCount,
       subtotal,
       sessionId,
@@ -188,8 +242,12 @@ export function CartProvider({
       openDrawer,
       closeDrawer,
       addItem,
+      addLocalShopItemAction,
+      addLocalBuildItemAction,
       removeItem,
+      removeLocalCartItem,
       updateQuantity,
+      updateLocalQuantity,
       clearItems,
     ],
   );

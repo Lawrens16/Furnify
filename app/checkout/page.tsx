@@ -28,7 +28,7 @@ const initialFormData: CheckoutFormData = {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal, sessionId, clearItems, isLoading } = useCart();
+  const { items, localItems, subtotal, sessionId, clearItems, isLoading } = useCart();
   const [formData, setFormData] = useState<CheckoutFormData>(initialFormData);
   const [errors, setErrors] = useState<
     Partial<Record<keyof CheckoutFormData, string>>
@@ -38,10 +38,10 @@ export default function CheckoutPage() {
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (!isLoading && items.length === 0) {
+    if (!isLoading && items.length === 0 && localItems.length === 0) {
       router.replace("/cart");
     }
-  }, [isLoading, items.length, router]);
+  }, [isLoading, items.length, localItems.length, router]);
 
   useEffect(() => {
     if (!toastMessage) {
@@ -293,27 +293,52 @@ export default function CheckoutPage() {
           <div className="sticky top-24 bg-white rounded-3xl shadow-md p-8">
             <h2 className="text-xl font-bold mb-6">Order Summary</h2>
 
-            <div className="max-h-64 overflow-y-auto">
+            <div className="max-h-64 overflow-y-auto space-y-1">
+              {/* DB items (BestSellers) */}
               {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-3 py-3 border-b border-gray-50"
-                >
+                <div key={item.id} className="flex items-center gap-3 py-3 border-b border-gray-50">
                   <img
                     src={item.product.image ?? "https://placehold.co/100x100.png"}
                     alt={item.product.name}
-                    className="w-12 h-12 rounded-xl object-cover bg-gray-50"
+                    className="w-12 h-12 rounded-xl object-cover bg-gray-50 flex-shrink-0"
                   />
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      {item.product.name}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      Qty: {item.quantity}
-                    </p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 truncate">{item.product.name}</p>
+                    <p className="text-xs text-gray-400">Qty: {item.quantity}</p>
                   </div>
                   <span className="text-sm font-bold text-gray-900 ml-auto">
                     {formatPrice(Number(item.product.price) * item.quantity)}
+                  </span>
+                </div>
+              ))}
+
+              {/* Local items (shop + build) */}
+              {localItems.map((item) => (
+                <div key={item.id} className="flex items-center gap-3 py-3 border-b border-gray-50">
+                  {item.type === "build" ? (
+                    <div className="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center border-2 border-dashed border-[#91A57D]/40 bg-[#91A57D]/5">
+                      <div
+                        className="w-6 h-6 rounded-full border border-white shadow"
+                        style={{ backgroundColor: item.config?.fabricColor ?? "#91A57D" }}
+                      />
+                    </div>
+                  ) : (
+                    <img
+                      src={item.image ?? "https://placehold.co/100x100.png"}
+                      alt={item.name}
+                      className="w-12 h-12 rounded-xl object-cover bg-gray-50 flex-shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 truncate">
+                      {item.type === "build" && item.config
+                        ? `Custom ${item.config.shape} — ${item.config.fabric}, ${item.config.legs} legs`
+                        : item.name}
+                    </p>
+                    <p className="text-xs text-gray-400">Qty: {item.quantity}</p>
+                  </div>
+                  <span className="text-sm font-bold text-gray-900 ml-auto">
+                    {formatPrice(item.price * item.quantity)}
                   </span>
                 </div>
               ))}

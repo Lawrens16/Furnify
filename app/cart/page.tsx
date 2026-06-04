@@ -15,7 +15,18 @@ function formatPrice(value: number) {
 
 export default function CartPage() {
   const router = useRouter();
-  const { items, itemCount, subtotal, updateQuantity, removeItem } = useCart();
+  const {
+    items,
+    localItems,
+    itemCount,
+    subtotal,
+    updateQuantity,
+    removeItem,
+    updateLocalQuantity,
+    removeLocalCartItem,
+  } = useCart();
+
+  const hasItems = items.length > 0 || localItems.length > 0;
 
   return (
     <main className="min-h-screen bg-[#e8e7e3] text-gray-900 font-sans selection:bg-[#91A57D] selection:text-white">
@@ -28,7 +39,7 @@ export default function CartPage() {
         </div>
 
         <AnimatePresence mode="wait">
-          {items.length === 0 ? (
+          {!hasItems ? (
             <motion.div
               key="empty"
               initial={{ opacity: 0, y: 20 }}
@@ -57,6 +68,8 @@ export default function CartPage() {
             >
               <div className="lg:col-span-2">
                 <h2 className="text-xl font-bold mb-6">Cart Items</h2>
+
+                {/* --- DB / BestSeller items --- */}
                 {items.map((item) => (
                   <div
                     key={item.id}
@@ -73,9 +86,7 @@ export default function CartPage() {
                           {item.product.tag}
                         </span>
                       )}
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {item.product.name}
-                      </h3>
+                      <h3 className="text-xl font-bold text-gray-900">{item.product.name}</h3>
                       <div className="flex items-center gap-2 mt-2">
                         <span className="text-2xl font-bold text-gray-900">
                           {formatPrice(Number(item.product.price))}
@@ -89,35 +100,99 @@ export default function CartPage() {
                       <div className="mt-auto flex items-center justify-between pt-6">
                         <div className="flex items-center">
                           <button
-                            onClick={() =>
-                              updateQuantity(item.product.id, item.quantity - 1)
-                            }
+                            onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                             className="w-9 h-9 rounded-full border-2 border-[#91A57D] text-[#91A57D] hover:bg-[#91A57D] hover:text-white font-bold transition-all duration-200"
                             aria-label="Decrease quantity"
-                          >
-                            -
-                          </button>
-                          <span className="text-lg font-semibold mx-4">
-                            {item.quantity}
-                          </span>
+                          >-</button>
+                          <span className="text-lg font-semibold mx-4">{item.quantity}</span>
                           <button
-                            onClick={() =>
-                              updateQuantity(item.product.id, item.quantity + 1)
-                            }
+                            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                             className="w-9 h-9 rounded-full border-2 border-[#91A57D] text-[#91A57D] hover:bg-[#91A57D] hover:text-white font-bold transition-all duration-200"
                             aria-label="Increase quantity"
-                          >
-                            +
-                          </button>
+                          >+</button>
                         </div>
                         <div className="flex items-center">
                           <span className="text-xl font-bold text-[#91A57D]">
-                            {formatPrice(
-                              Number(item.product.price) * item.quantity,
-                            )}
+                            {formatPrice(Number(item.product.price) * item.quantity)}
                           </span>
                           <button
                             onClick={() => removeItem(item.product.id)}
+                            className="text-gray-400 hover:text-red-400 transition-all duration-200 ml-4"
+                            aria-label="Remove item"
+                          >
+                            <Trash2 size={20} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* --- Local items (shop + build) --- */}
+                {localItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-3xl p-6 mb-4 shadow-sm flex flex-col sm:flex-row gap-6"
+                  >
+                    {item.type === "build" ? (
+                      /* Custom build — fabric swatch instead of image */
+                      <div className="w-full sm:w-32 h-32 rounded-2xl flex-shrink-0 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-[#91A57D]/40 bg-[#91A57D]/5">
+                        <div
+                          className="w-10 h-10 rounded-full border-2 border-white shadow-md"
+                          style={{ backgroundColor: item.config?.fabricColor ?? "#91A57D" }}
+                        />
+                        <span className="text-[10px] font-bold text-[#91A57D] uppercase tracking-wider text-center px-1">
+                          Custom Build
+                        </span>
+                      </div>
+                    ) : (
+                      <img
+                        src={item.image ?? "https://placehold.co/200x200.png"}
+                        alt={item.name}
+                        className="w-full sm:w-32 h-32 rounded-2xl object-cover bg-gray-50 flex-shrink-0"
+                      />
+                    )}
+
+                    <div className="flex-1 flex flex-col">
+                      <h3 className="text-xl font-bold text-gray-900">{item.name}</h3>
+
+                      {item.type === "build" && item.config && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <span className="text-xs bg-[#91A57D]/10 text-[#91A57D] px-2 py-1 rounded-full font-semibold">
+                            {item.config.fabric}
+                          </span>
+                          <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full font-semibold">
+                            {item.config.legs} legs
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-2xl font-bold text-gray-900">
+                          {formatPrice(item.price)}
+                        </span>
+                      </div>
+
+                      <div className="mt-auto flex items-center justify-between pt-6">
+                        <div className="flex items-center">
+                          <button
+                            onClick={() => updateLocalQuantity(item.id, item.quantity - 1)}
+                            className="w-9 h-9 rounded-full border-2 border-[#91A57D] text-[#91A57D] hover:bg-[#91A57D] hover:text-white font-bold transition-all duration-200"
+                            aria-label="Decrease quantity"
+                          >-</button>
+                          <span className="text-lg font-semibold mx-4">{item.quantity}</span>
+                          <button
+                            onClick={() => updateLocalQuantity(item.id, item.quantity + 1)}
+                            className="w-9 h-9 rounded-full border-2 border-[#91A57D] text-[#91A57D] hover:bg-[#91A57D] hover:text-white font-bold transition-all duration-200"
+                            aria-label="Increase quantity"
+                          >+</button>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-xl font-bold text-[#91A57D]">
+                            {formatPrice(item.price * item.quantity)}
+                          </span>
+                          <button
+                            onClick={() => removeLocalCartItem(item.id)}
                             className="text-gray-400 hover:text-red-400 transition-all duration-200 ml-4"
                             aria-label="Remove item"
                           >
@@ -135,30 +210,22 @@ export default function CartPage() {
                   <h2 className="text-xl font-bold mb-6">Order Summary</h2>
                   <div className="flex justify-between py-3 border-b border-gray-100">
                     <span className="text-gray-600">Subtotal</span>
-                    <span className="font-semibold">
-                      {formatPrice(subtotal)}
-                    </span>
+                    <span className="font-semibold">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between py-3 border-b border-gray-100">
                     <span className="text-gray-600">Shipping</span>
-                    <span className="text-sm text-gray-400">
-                      Calculated at checkout
-                    </span>
+                    <span className="text-sm text-gray-400">Calculated at checkout</span>
                   </div>
                   <div className="flex justify-between py-3">
-                    <span className="text-gray-900 font-semibold">
-                      Estimated Total
-                    </span>
-                    <span className="text-[#91A57D] font-bold text-lg">
-                      {formatPrice(subtotal)}
-                    </span>
+                    <span className="text-gray-900 font-semibold">Estimated Total</span>
+                    <span className="text-[#91A57D] font-bold text-lg">{formatPrice(subtotal)}</span>
                   </div>
 
                   <button
                     onClick={() => router.push("/checkout")}
                     className="w-full mt-6 bg-[#91A57D] hover:bg-[#7e916c] text-white font-semibold py-4 rounded-full transition-all duration-200"
                   >
-                    Proceed to Checkout 
+                    Proceed to Checkout →
                   </button>
                   <button
                     onClick={() => router.push("/")}
@@ -172,7 +239,6 @@ export default function CartPage() {
           )}
         </AnimatePresence>
       </div>
-
     </main>
   );
 }
