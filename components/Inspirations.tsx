@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Inspirations() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -38,6 +38,16 @@ const testimonials = [
   const handleNext = () => {
     setCurrentTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
+
+  // Auto-advance every 5 s; resets when user navigates manually
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTestimonial((prev) =>
+        prev === testimonials.length - 1 ? 0 : prev + 1
+      );
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [currentTestimonial, testimonials.length]);
 
   return (
     <section className="w-full px-4 md:px-8 py-16 bg-[#e8e7e3]">
@@ -86,7 +96,7 @@ const testimonials = [
         </div>
 
         {/* Testimonials Section */}
-        <div className="bg-white rounded-[3rem] p-8 md:p-16 shadow-sm flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
+        <div id="testimonials" className="bg-white rounded-[3rem] p-8 md:p-16 shadow-sm flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
           <div className="md:w-1/3">
              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 leading-tight mb-4">
                Our Clients <br /> Beautiful Words
