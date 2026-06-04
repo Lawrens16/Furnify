@@ -28,9 +28,7 @@ export default function Navbar() {
           <button className="text-gray-700 hover:text-[#91A57D] transition-all duration-200 p-2">
             <Search size={20} />
           </button>
-          <button className="text-gray-700 hover:text-[#91A57D] transition-all duration-200 p-2">
-            <Heart size={20} />
-          </button>
+          
           <button
             onClick={openDrawer}
             className="text-gray-700 hover:text-[#91A57D] transition-all duration-200 p-2 relative"
@@ -43,13 +41,7 @@ export default function Navbar() {
               </span>
             )}
           </button>
-          <div className="ml-2">
-            <img
-              src="https://placehold.co/40x40.png"
-              alt="User avatar"
-              className="w-10 h-10 rounded-full object-cover border-2 border-transparent hover:border-[#91A57D] transition-colors cursor-pointer"
-            />
-          </div>
+          
         </div>
       </nav>
       <CartDrawer />

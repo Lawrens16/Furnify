@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Environment, ContactShadows, RoundedBox, AccumulativeShadows, RandomizedLight } from "@react-three/drei";
 import { Check, ShoppingCart, Info } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
-import { getProducts } from "@/lib/actions/products";
-import { normalizeProductName } from "@/lib/utils";
-import type { Product } from "@/types/database";
 
 // --- 3D Configurable Component ---
 function ConfigurableFurniture({ shape, fabricColor, legColor }: { shape: string, fabricColor: string, legColor: string }) {
@@ -146,34 +143,14 @@ const LEG_MATERIALS = [
 ];
 
 export default function BuildPage() {
-  const { addItem } = useCart();
+  const { addLocalBuildItem } = useCart();
   const [activeShape, setActiveShape] = useState(SHAPES[0]);
   const [activeFabric, setActiveFabric] = useState(FABRIC_COLORS[0]);
   const [activeLegs, setActiveLegs] = useState(LEG_MATERIALS[0]);
-  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
-  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const totalPrice = activeShape.basePrice + activeLegs.price;
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadProducts = async () => {
-      const data = await getProducts();
-      if (isMounted) {
-        setCatalogProducts(data);
-        setIsCatalogLoading(false);
-      }
-    };
-
-    loadProducts();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   useEffect(() => {
     if (!toastMessage) {
@@ -195,30 +172,15 @@ export default function BuildPage() {
     };
   }, [toastMessage]);
 
-  const catalogByName = useMemo(() => {
-    const map = new Map<string, Product>();
-    catalogProducts.forEach((product) => {
-      map.set(normalizeProductName(product.name), product);
-    });
-    return map;
-  }, [catalogProducts]);
-
-  const matchedProduct =
-    catalogByName.get(normalizeProductName(activeShape.name)) ?? null;
-
   const handleAddToCart = async () => {
-    if (isCatalogLoading) {
-      setToastMessage("Loading products...");
-      return;
-    }
-
-    if (!matchedProduct) {
-      setToastMessage("This build isn't available yet.");
-      return;
-    }
-
-    await addItem(matchedProduct);
-    setToastMessage("Added to cart!");
+    addLocalBuildItem(
+      activeShape.name,
+      activeFabric.name,
+      activeFabric.value,
+      activeLegs.name,
+      totalPrice,
+    );
+    setToastMessage("Custom build added to cart!");
   };
 
   return (
@@ -366,9 +328,7 @@ export default function BuildPage() {
                 
                 <button
                   onClick={handleAddToCart}
-                  disabled={isCatalogLoading || !matchedProduct}
-                  aria-disabled={isCatalogLoading || !matchedProduct}
-                  className="w-full bg-[#91A57D] hover:bg-[#839670] text-white py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#91A57D]/30 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full bg-[#91A57D] hover:bg-[#839670] text-white py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#91A57D]/30"
                 >
                   <ShoppingCart size={22} />
                   Add to Cart
