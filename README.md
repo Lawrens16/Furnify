@@ -79,18 +79,29 @@ Built with scalability in mind, the platform uses Next.js for high-performance s
 ---
 
 ## Screenshots
-
-> Upload your screenshots inside the `screenshots/` folder and reference them here.
-
+ 
 ### Home Showcase
-<!-- ![Home Showcase](screenshots/home.png) -->
-
-### Product Catalog & Shop
-<!-- ![Product Catalog](screenshots/catalog.png) -->
-
-### Interactive 3D Viewer
-<!-- ![3D Viewer](screenshots/viewer.png) -->
-
+ 
+![Home Showcase 1](https://i.imgur.com/PcFuWBP.png)
+![Home Showcase 2](https://i.imgur.com/onhYyhe.png)
+![Home Showcase 3](https://i.imgur.com/WBUEyBE.png)
+ 
+### Shop — Products Collection
+ 
+![Shop Products Collection](https://i.imgur.com/nwqnyBr.png)
+ 
+### Interactive 3D Builder
+ 
+![Interactive 3D Builder](https://i.imgur.com/Tclallz.png)
+ 
+### Shopping Cart
+ 
+![Shopping Cart](https://i.imgur.com/qmZCP8l.png)
+ 
+### Checkout Page
+ 
+![Checkout Page](https://i.imgur.com/uLo7Z8U.png)
+ 
 ---
 
 ## Live Demo
