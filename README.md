@@ -121,3 +121,5 @@ Built with scalability in mind, the platform uses Next.js for high-performance s
 * **Custom AR Room Placement:** Integrate WebXR capabilities to let users view 3D furniture configurations inside their own room using a mobile camera.
 * **Interactive Custom Room Builder:** Create a draggable canvas layout allowing buyers to map their floor dimensions and arrange multiple furniture products together.
 * **Real-time Order Status Tracking:** Introduce transactional email updates and live delivery tracking dashboards for customer convenience.
+* **Persistent Navigation Bar:** Allows persistent navigation bar when too far from the topmost section of the page.
+* **Activate Page Indicator:** Implement a page indicator, simply just highlighting the page name or something similar for the users to know which page they are currently at.
